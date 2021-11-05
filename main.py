@@ -10,11 +10,11 @@ class SeparatorVariables(ttk.Frame):
         # create variables
         self.P_sep_var = tk.DoubleVar()
         self.T_sep_var = tk.DoubleVar()
+        self.print_var = tk.DoubleVar()
 
         # create widgets
         self.setup_widgets()
-
-    
+        
 
     def setup_widgets(self):
         # create label frame
@@ -41,22 +41,30 @@ class SeparatorVariables(ttk.Frame):
         self.T_sep_unit = ttk.Label(self.separator_variables_frame, text="deg F")
         self.T_sep_unit.grid(row=1, column=2, padx=10, pady=5)
 
+        # print label
+        self.print_label = ttk.Label(self.separator_variables_frame, 
+            textvariable=self.print_var
+            ).grid(row=2, column=1, padx=10, pady=10)
+
         # coba2 button
         self.button = ttk.Button(self.separator_variables_frame,command=
-            lambda: self.PrintFunc(self.separator_variables_frame, 
-                varP=self.P_sep_var.get(),
-                varT=self.T_sep_var.get()
+            lambda: self.PrintFunc(
+                varP = self.P_sep_var.get(),
+                varT = self.T_sep_var.get()
                 ),
                 
             text="Print")
         self.button.grid(row=2, column=0, padx=10, pady=10)
 
-    def PrintFunc(self, parent, varP, varT):
+        
+
+    def PrintFunc(self, varP, varT):
         def add(varP, varT):
             return varP + varT
-        self.label = ttk.Label(parent, text=add(varP,varT))
-        self.label.grid(row=2, column=1, padx=10, pady=10)
 
+        self.print_var.set(add(varP, varT))
+
+        
 class App(ttk.Frame):
     def __init__(self, parent):
         ttk.Frame.__init__(self, parent)
