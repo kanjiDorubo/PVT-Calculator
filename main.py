@@ -1,20 +1,20 @@
 import tkinter as tk
 from tkinter import ttk
-from functions import *
+from functions import Tc_Riazi_Daubert
 
 
 class SeparatorVariables(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, Psepvar, Tsepvar):
         ttk.Frame.__init__(self, parent)
 
         # create variables
-        self.P_sep_var = tk.DoubleVar()
-        self.T_sep_var = tk.DoubleVar()
+        self.P_sep_var = Psepvar
+        self.T_sep_var = Tsepvar
         self.print_var = tk.DoubleVar()
 
         # create widgets
         self.setup_widgets()
-        
+    
 
     def setup_widgets(self):
         # create label frame
@@ -41,29 +41,6 @@ class SeparatorVariables(ttk.Frame):
         self.T_sep_unit = ttk.Label(self.separator_variables_frame, text="deg F")
         self.T_sep_unit.grid(row=1, column=2, padx=10, pady=5)
 
-        # print label
-        self.print_label = ttk.Label(self.separator_variables_frame, 
-            textvariable=self.print_var
-            ).grid(row=2, column=1, padx=10, pady=10)
-
-        # coba2 button
-        self.button = ttk.Button(self.separator_variables_frame,command=
-            lambda: self.PrintFunc(
-                varP = self.P_sep_var.get(),
-                varT = self.T_sep_var.get()
-                ),
-                
-            text="Print")
-        self.button.grid(row=2, column=0, padx=10, pady=10)
-
-        
-
-    def PrintFunc(self, varP, varT):
-        def add(varP, varT):
-            return varP + varT
-
-        self.print_var.set(add(varP, varT))
-
         
 class App(ttk.Frame):
     def __init__(self, parent):
@@ -74,9 +51,21 @@ class App(ttk.Frame):
         self.var_str = tk.StringVar()
         self.var_int = tk.IntVar()
         self.var_float = tk.DoubleVar()
+
+        self.P_sep_var = tk.DoubleVar(value=0)
+        self.T_sep_var = tk.DoubleVar(value=0)
+        self.CalcVar = tk.DoubleVar(value=0)
+        self.CalcLabel = tk.StringVar()
         
         # create widgets
         self.setup_widgets()
+
+    def calc(self):
+        def sum(var1, var2):
+            return var1+var2
+
+        self.CalcVar.set(sum(self.P_sep_var.get(), self.T_sep_var.get()))
+        self.CalcLabel.set('Calculations finished!')
 
     # create widgets
     def setup_widgets(self):
@@ -92,7 +81,17 @@ class App(ttk.Frame):
         self.graph_tab = ttk.Frame(self.notebook)
         self.notebook.add(self.graph_tab, text="GRAPH")
 
+        # another notebook in graph
+        self.graph_notebook = ttk.Notebook(self.graph_tab)
+        self.graph_notebook.pack(fill="both", expand=True)
 
+        self.Bo_graph = ttk.Frame(self.graph_tab)
+        self.graph_notebook.add(self.Bo_graph, text="Bo")
+
+        self.Rs_graph = ttk.Frame(self.graph_tab)
+        self.graph_notebook.add(self.Rs_graph, text="Rs")
+
+        self.Bo_label = ttk.Label(self.Bo_graph, textvariable=self.CalcVar).pack()
 
         # general data input frame
         self.general_data_frame = ttk.LabelFrame(self.input_tab, text="General Data")
@@ -165,8 +164,14 @@ class App(ttk.Frame):
         self.Rs_at_Pb_unit_label.grid(row=1, sticky="W", column=2, padx=10, pady=5)
 
         # Separator Variables
-        self.sep = SeparatorVariables(self.input_tab)
+        self.sep = SeparatorVariables(self.input_tab, self.P_sep_var, self.T_sep_var)
         self.sep.grid(row=2, column=0)
+
+        self.calc_button = ttk.Button(self.input_tab, text="Calculate", command=self.calc)
+        self.calc_button.grid(row=2, column=1, padx=10, pady=5)
+
+        self.calc_label = ttk.Label(self.input_tab, textvariable=self.CalcLabel)
+        self.calc_label.grid(row=2, column=2, padx=10, pady=5)
 
 if __name__ == "__main__":
     root = tk.Tk()
