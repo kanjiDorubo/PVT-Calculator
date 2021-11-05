@@ -2,9 +2,64 @@ import tkinter as tk
 from tkinter import ttk
 from functions import *
 
+
+class SeparatorVariables(ttk.Frame):
+    def __init__(self, parent):
+        ttk.Frame.__init__(self, parent)
+
+        # create variables
+        self.P_sep_var = tk.DoubleVar()
+        self.T_sep_var = tk.DoubleVar()
+
+        # create widgets
+        self.setup_widgets()
+
+    
+
+    def setup_widgets(self):
+        # create label frame
+        self.separator_variables_frame = ttk.LabelFrame(self, text="Separator Variables")
+        self.separator_variables_frame.pack()
+
+        # create other widgets
+        # label
+        self.P_sep = ttk.Label(self.separator_variables_frame, text="Separator Pressure")
+        self.P_sep.grid(row=0, column=0, padx=10, pady=5, sticky='W')
+
+        self.P_sep_entry = ttk.Entry(self.separator_variables_frame, textvariable=self.P_sep_var)
+        self.P_sep_entry.grid(row=0, column=1, padx=10, pady=5)
+
+        self.P_sep_unit = ttk.Label(self.separator_variables_frame, text="psia")
+        self.P_sep_unit.grid(row=0, column=2, padx=10, pady=5)
+
+        self.T_sep = ttk.Label(self.separator_variables_frame, text="Separator Temperature")
+        self.T_sep.grid(row=1, column=0, padx=10, pady=5, sticky='W')
+
+        self.T_sep_entry = ttk.Entry(self.separator_variables_frame, textvariable=self.T_sep_var)
+        self.T_sep_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        self.T_sep_unit = ttk.Label(self.separator_variables_frame, text="deg F")
+        self.T_sep_unit.grid(row=1, column=2, padx=10, pady=5)
+
+        # coba2 button
+        self.button = ttk.Button(self.separator_variables_frame,command=
+            lambda: self.PrintFunc(self.separator_variables_frame, 
+                varP=self.P_sep_var.get(),
+                varT=self.T_sep_var.get()
+                ),
+                
+            text="Print")
+        self.button.grid(row=2, column=0, padx=10, pady=10)
+
+    def PrintFunc(self, parent, varP, varT):
+        def add(varP, varT):
+            return varP + varT
+        self.label = ttk.Label(parent, text=add(varP,varT))
+        self.label.grid(row=2, column=1, padx=10, pady=10)
+
 class App(ttk.Frame):
-    def __init__(self, master):
-        ttk.Frame.__init__(self)
+    def __init__(self, parent):
+        ttk.Frame.__init__(self, parent)
     
         # create control variables
         self.var_bool = tk.BooleanVar()
@@ -14,7 +69,6 @@ class App(ttk.Frame):
         
         # create widgets
         self.setup_widgets()
-
 
     # create widgets
     def setup_widgets(self):
@@ -102,7 +156,9 @@ class App(ttk.Frame):
         self.Rs_at_Pb_unit_label = ttk.Label(self.oil_data_frame, text="MSCF/STB")
         self.Rs_at_Pb_unit_label.grid(row=1, sticky="W", column=2, padx=10, pady=5)
 
-
+        # Separator Variables
+        self.sep = SeparatorVariables(self.input_tab)
+        self.sep.grid(row=2, column=0)
 
 if __name__ == "__main__":
     root = tk.Tk()
