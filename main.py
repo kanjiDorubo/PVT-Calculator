@@ -1,45 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-from functions import Tc_Riazi_Daubert
-
-
-class SeparatorVariables(ttk.Frame):
-    def __init__(self, parent, Psepvar, Tsepvar):
-        ttk.Frame.__init__(self, parent)
-
-        # create variables
-        self.P_sep_var = Psepvar
-        self.T_sep_var = Tsepvar
-        self.print_var = tk.DoubleVar()
-
-        # create widgets
-        self.setup_widgets()
-    
-
-    def setup_widgets(self):
-        # create label frame
-        self.separator_variables_frame = ttk.LabelFrame(self, text="Separator Variables")
-        self.separator_variables_frame.pack()
-
-        # create other widgets
-        # label
-        self.P_sep = ttk.Label(self.separator_variables_frame, text="Separator Pressure")
-        self.P_sep.grid(row=0, column=0, padx=10, pady=5, sticky='W')
-
-        self.P_sep_entry = ttk.Entry(self.separator_variables_frame, textvariable=self.P_sep_var)
-        self.P_sep_entry.grid(row=0, column=1, padx=10, pady=5)
-
-        self.P_sep_unit = ttk.Label(self.separator_variables_frame, text="psia")
-        self.P_sep_unit.grid(row=0, column=2, padx=10, pady=5)
-
-        self.T_sep = ttk.Label(self.separator_variables_frame, text="Separator Temperature")
-        self.T_sep.grid(row=1, column=0, padx=10, pady=5, sticky='W')
-
-        self.T_sep_entry = ttk.Entry(self.separator_variables_frame, textvariable=self.T_sep_var)
-        self.T_sep_entry.grid(row=1, column=1, padx=10, pady=5)
-
-        self.T_sep_unit = ttk.Label(self.separator_variables_frame, text="deg F")
-        self.T_sep_unit.grid(row=1, column=2, padx=10, pady=5)
+from helperfunc.Functions import *
+from SeparatorVariables import SeparatorVariables
+from GeneralData import GeneralData
+from OilData import OilData
+from BubblepointPressure import BubblepointPressure
 
         
 class App(ttk.Frame):
@@ -52,8 +17,25 @@ class App(ttk.Frame):
         self.var_int = tk.IntVar()
         self.var_float = tk.DoubleVar()
 
+        # General Data variables
+        self.T_res_var = tk.DoubleVar(value = 0)
+        self.P_res_var = tk.DoubleVar(value = 0)
+        self.P_sc_var = tk.DoubleVar(value=0)
+        self.Gas_gravity_var = tk.DoubleVar(value=0)
+
+        # # Oil Data variables
+        self.oil_api_var = tk.DoubleVar(value=0)
+        self.Rs_at_Pb_var = tk.DoubleVar(value = 0) 
+
+        # Separator variables
         self.P_sep_var = tk.DoubleVar(value=0)
         self.T_sep_var = tk.DoubleVar(value=0)
+        
+        # Bubblepoint Pressure variable
+        self.Pb_var = tk.DoubleVar(value=0)
+
+
+
         self.CalcVar = tk.DoubleVar(value=0)
         self.CalcLabel = tk.StringVar()
         
@@ -67,7 +49,7 @@ class App(ttk.Frame):
         self.CalcVar.set(sum(self.P_sep_var.get(), self.T_sep_var.get()))
         self.CalcLabel.set('Calculations finished!')
 
-    # create widgets
+    # create widgetsb
     def setup_widgets(self):
         # notebook for containing things
         self.notebook = ttk.Notebook(self) #make notebook for input tab and graph tab
@@ -93,85 +75,54 @@ class App(ttk.Frame):
 
         self.Bo_label = ttk.Label(self.Bo_graph, textvariable=self.CalcVar).pack()
 
-        # general data input frame
-        self.general_data_frame = ttk.LabelFrame(self.input_tab, text="General Data")
-        self.general_data_frame.grid(row=0, column=0, columnspan=1)
+        # add table on graph
+        self.table_contoh = ttk.Treeview(self.Rs_graph)
+        self.table_contoh['columns'] = ('P','Rs')
 
-        # T reservoir
-        self.T_res = ttk.Entry(self.general_data_frame)
-        self.T_res.grid(row=0, column=1,padx=10, pady=5)
+        self.table_contoh.column("#0", width=0,  stretch='NO')
+        self.table_contoh.column('P', anchor='center')
+        self.table_contoh.column('Rs', anchor='center')
 
-        self.T_res_label = ttk.Label(self.general_data_frame, text="Reservoir Temperature")
-        self.T_res_label.grid(row=0, sticky="W", column=0, padx=10, pady=5)
-
-        self.T_res_unit_label = ttk.Label(self.general_data_frame, text="deg F")
-        self.T_res_unit_label.grid(row=0, sticky="W", column=2, padx=10, pady=5)
-
-        # Initial res pressure
-        self.P_init = ttk.Entry(self.general_data_frame)
-        self.P_init.grid(row=1, column=1, padx=10, pady=5)
-
-        self.P_init_label = ttk.Label(self.general_data_frame, text="Initial Reservoir Pressure")
-        self.P_init_label.grid(row=1, sticky="W", column=0, padx=10, pady=5)
-
-        self.P_init_unit_label = ttk.Label(self.general_data_frame, text="psia")
-        self.P_init_unit_label.grid(row=1, sticky="W", column=2, padx=10, pady=5)
-
-        # standard pressure
-        self.P_sc = ttk.Entry(self.general_data_frame)
-        self.P_sc.grid(row=2, column=1, padx=10, pady=5)
-
-        self.P_sc_label = ttk.Label(self.general_data_frame, text="Standard Pressure")
-        self.P_sc_label.grid(row=2, sticky="W", column=0, padx=10, pady=5)
-
-        self.P_sc_unit_label = ttk.Label(self.general_data_frame, text="psia")
-        self.P_sc_unit_label.grid(row=2, sticky="W", column=2, padx=10, pady=5)
-
-        # gas gravity
-        self.Gas_SG = ttk.Entry(self.general_data_frame)
-        self.Gas_SG.grid(row=3, column=1, padx=10, pady=5)
-
-        self.Gas_SG_label = ttk.Label(self.general_data_frame, text="Gas Gravity (Air = 1.0)")
-        self.Gas_SG_label.grid(row=3, sticky="W", column=0, padx=10, pady=5)
-
-        self.Gas_SG_unit_label = ttk.Label(self.general_data_frame, text="")
-        self.Gas_SG_unit_label.grid(row=3, sticky="W", column=2, padx=10, pady=5)
+        self.table_contoh.heading('#0', text='', anchor='center')
+        self.table_contoh.heading('P', text='P', anchor='center')
+        self.table_contoh.heading('Rs', text='Rs', anchor='center')
 
 
 
-        # Oil data frame
-        self.oil_data_frame = ttk.LabelFrame(self.input_tab, text="Oil Data")
-        self.oil_data_frame.grid(row=1, column=0)
 
-        # oil api
-        self.oil_API = ttk.Entry(self.oil_data_frame)
-        self.oil_API.grid(row=0, column=1, padx=10, pady=5)
 
-        self.oil_API_label = ttk.Label(self.oil_data_frame, text="Oil API")
-        self.oil_API_label.grid(row=0, sticky="W", column=0, padx=10, pady=5)
+        # general data widget
+        self.general_data = GeneralData(
+            self.input_tab,
+            Presvar = self.P_res_var,
+            Tresvar = self.T_res_var,
+            Pscvar = self.P_sc_var,
+            Gas_gravity_var = self.Gas_gravity_var
+            )
+        self.general_data.grid(row=0, column=0)
 
-        self.oil_API_unit_label = ttk.Label(self.oil_data_frame, text="deg API")
-        self.oil_API_unit_label.grid(row=0, sticky="W", column=2, padx=10, pady=5)
+        # oil data widget
+        self.oil_data = OilData(self.input_tab,
+            oilapivar = self.oil_api_var,
+            RsatPbvar = self.Rs_at_Pb_var
+            )
+        self.oil_data.grid(row=1, column=0)
+
         
-        # Rs @ Pb
-        self.Rs_at_Pb = ttk.Entry(self.oil_data_frame)
-        self.Rs_at_Pb.grid(row=1, column=1, padx=10, pady=5)
 
-        self.Rs_at_Pb_label = ttk.Label(self.oil_data_frame, text="Rs @ Pb")
-        self.Rs_at_Pb_label.grid(row=1, sticky="W", column=0, padx=10, pady=5)
-
-        self.Rs_at_Pb_unit_label = ttk.Label(self.oil_data_frame, text="MSCF/STB")
-        self.Rs_at_Pb_unit_label.grid(row=1, sticky="W", column=2, padx=10, pady=5)
-
-        # Separator Variables
-        self.sep = SeparatorVariables(self.input_tab, self.P_sep_var, self.T_sep_var)
-        self.sep.grid(row=2, column=0)
+        # separator variables widget
+        self.separator_variables = SeparatorVariables(self.input_tab, self.P_sep_var, self.T_sep_var)
+        self.separator_variables.grid(row=2, column=0)
 
         self.calc_button = ttk.Button(self.input_tab, text="Calculate", command=self.calc)
         self.calc_button.grid(row=2, column=1, padx=10, pady=5)
 
         self.calc_label = ttk.Label(self.input_tab, textvariable=self.CalcLabel)
         self.calc_label.grid(row=2, column=2, padx=10, pady=5)
+
+        # bubblepoint pressure widget
+        self.bubblepoint_pressure = BubblepointPressure(self.input_tab, Pbvar=self.Pb_var)
+        self.bubblepoint_pressure.grid(row=3, column=0)
 
 if __name__ == "__main__":
     root = tk.Tk()
