@@ -13,7 +13,7 @@ class BubblepointPressure(ttk.Frame):
 
 	def setup_widgets(self):
 		self.Pb_labelframe = ttk.LabelFrame(self, text="Bubblepoint Pressure")
-		self.Pb_labelframe.pack()
+		self.Pb_labelframe.pack(fill='x')
 
 		self.Pb_label = ttk.Label(self.Pb_labelframe, text="Bubblepoint Pressure (Pb)")
 		self.Pb_label.grid(row = 0, column = 0, padx=10, pady=5)

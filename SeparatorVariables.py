@@ -17,7 +17,7 @@ class SeparatorVariables(ttk.Frame):
     def setup_widgets(self):
         # create label frame
         self.separator_variables_frame = ttk.LabelFrame(self, text="Separator Variables")
-        self.separator_variables_frame.pack()
+        self.separator_variables_frame.pack(fill='x')
 
         # create other widgets
         # label
@@ -36,5 +36,5 @@ class SeparatorVariables(ttk.Frame):
         self.T_sep_entry = ttk.Entry(self.separator_variables_frame, textvariable=self.T_sep_var)
         self.T_sep_entry.grid(row=1, column=1, padx=10, pady=5)
 
-        self.T_sep_unit = ttk.Label(self.separator_variables_frame, text="deg F")
+        self.T_sep_unit = ttk.Label(self.separator_variables_frame, text="°F")
         self.T_sep_unit.grid(row=1, column=2, padx=10, pady=5)

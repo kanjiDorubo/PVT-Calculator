@@ -18,7 +18,7 @@ class GeneralData(ttk.Frame):
 	def setup_widgets(self):
 		 # general data input frame
 		self.general_data_frame = ttk.LabelFrame(self, text="General Data")
-		self.general_data_frame.pack()
+		self.general_data_frame.pack(fill='x')
 
 		# T reservoir
 		self.T_res = ttk.Entry(self.general_data_frame, textvariable = self.T_res_var)
@@ -27,7 +27,7 @@ class GeneralData(ttk.Frame):
 		self.T_res_label = ttk.Label(self.general_data_frame, text="Reservoir Temperature")
 		self.T_res_label.grid(row=0, sticky="W", column=0, padx=10, pady=5)
 
-		self.T_res_unit_label = ttk.Label(self.general_data_frame, text="deg F")
+		self.T_res_unit_label = ttk.Label(self.general_data_frame, text="°F")
 		self.T_res_unit_label.grid(row=0, sticky="W", column=2, padx=10, pady=5)
 
 		# Initial res pressure
