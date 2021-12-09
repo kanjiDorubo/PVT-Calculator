@@ -26,7 +26,7 @@ class CriticalGasData(ttk.Frame):
 
 		# Select correlation
 		self.gas_corr_select_label = ttk.Label(self.CriticalGasData_labelframe, 
-			text="Gas Correlation")
+			text="Pseudocritical Correlation")
 		
 		self.gas_corr_select_label.grid(row=0, column=0, padx=10, pady=5)
 

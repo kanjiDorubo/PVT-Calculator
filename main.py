@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from helperfunc.Functions import *
+import helperfunc.Dimas
 
 from GeneralData import GeneralData
 from OilData import OilData
@@ -15,6 +16,7 @@ from PressureOfInterest import PressureOfInterest
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 plt.style.use('azure_dark')
         
@@ -136,10 +138,20 @@ class App(ttk.Frame):
         self.x = []
         self.y = []
         self.table_contoh_data = []
+
+        self.df = pd.DataFrame()
+
+        
         for P in range(0, 5000, 500):
             self.table_contoh_data.append((P,testfunc(P)))
+            
             self.x.append(P)
             self.y.append(testfunc(P))
+            
+        self.x = np.array(self.x)
+        self.y = np.array(self.y)
+
+        self.figures_database = dict()
 
         for data in self.table_contoh_data:
             self.table_contoh.insert('', tk.END, values=data)
@@ -155,6 +167,11 @@ class App(ttk.Frame):
         plot1.set_ylabel("Rs (MSCF/STB)")
         plot1.set_title("P - Rs Graph")
         canvas = FigureCanvasTkAgg(fig, self.Rs_graph)
+
+        self.figures_database.update({1: canvas})
+
+        canvas = self.figures_database.get(1)
+        
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=1, padx=20, pady=20, sticky='nsew')
 
